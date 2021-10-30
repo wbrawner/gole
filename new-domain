@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+from os.path import exists
+import sys
+import subprocess
+
+ini_file = '/root/digitalocean.ini'
+if not exists(ini_file):
+    print("ERROR: digitalocean credentials not present at " + ini_file)
+
+cmd = ['certbot', 'certonly',
+        '--dns-digitalocean',
+        '--dns-digitalocean-credentials',
+        ini_file,
+        '--dns-digitalocean-propagation-seconds',
+        '90',
+        ]
+
+for domain in sys.argv[1:]:
+    cmd.extend(['-d', domain])
+
+print(run(cmd, stdout=PIPE, stderr=PIPE).stdout.decode('utf=8'))
